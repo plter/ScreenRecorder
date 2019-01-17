@@ -1,0 +1,28 @@
+{
+  "name": "screen-recorder",
+  "version": "2018.12.18",
+  "description": "ScreenRecorder",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://yunp.top",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "devDependencies": {
+    "electron": "^3.0.13",
+    "gulp": "^3.9.1",
+    "gulp-shell": "^0.6.5"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.3.1",
+    "js-md5": "^0.7.3"
+  }
+}

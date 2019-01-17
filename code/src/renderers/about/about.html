@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>关于 FreeScreenRecorder</title>
+
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
+</head>
+<body style="margin: 0">
+<div id="root" style="padding: 10px;display: flex;flex-direction: column;">
+    <h3>关于 ScreenRecorder</h3>
+    <div id="version"></div>
+    <div>
+        <p>ScreenRecorder是北京顶级云加科技有限公司开发的录屏软件</p>
+        <p>
+            公司官网：<a href="#" onclick="require('electron').shell.openExternal('https://yunp.top');">https://yunp.top</a>
+        </p>
+    </div>
+    <div style="padding-top: 10px;flex: 1;">
+        <div>全局热键说明</div>
+        <ul>
+            <li>开始或停止 : Command(Ctrl) + 8</li>
+            <li>暂停或继续 : Command(Ctrl) + 9</li>
+        </ul>
+    </div>
+    <div style="text-align: center;">
+        <button id="btn-close" class="btn btn-danger" onclick="window.close()">关闭</button>
+    </div>
+</div>
+
+<script>
+    window.$ = window.jQuery = require("jquery");
+    require("bootstrap");
+
+    (function () {
+
+        let root = document.querySelector("#root");
+
+        function windowRezieHandler() {
+            root.style.width = window.innerWidth + "px";
+            root.style.height = window.innerHeight + "px";
+        }
+
+        function main() {
+            windowRezieHandler();
+            window.onresize = windowRezieHandler;
+        }
+
+        main();
+    })();
+</script>
+<script src="about.js"></script>
+</body>
+</html>

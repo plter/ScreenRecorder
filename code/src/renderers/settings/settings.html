@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>配置面板</title>
+
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
+</head>
+<body style="margin: 0;">
+<div id="root" style="display: flex;flex-direction: column;padding: 10px;">
+    <div>
+        <div style="font-weight: bold;font-size: 12pt;">采样率(单位Bit/S)：</div>
+        <div style="height: 5px;"></div>
+        <div style="display: flex;align-items: center;">
+            <label for="audioBpsInput">音频</label>
+            <input class="form-control" type="number" id="audioBpsInput" style="flex: 1">
+            <div style="width: 10px;"></div>
+            <label for="videoBpsInput">视频</label>
+            <input class="form-control" type="number" id="videoBpsInput" style="flex: 1">
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div style="display: flex;flex-direction: column;">
+        <div style="font-weight: bold;font-size: 12pt;">视频库：</div>
+        <div style="height: 5px;"></div>
+        <div style="display: flex;flex-direction: row;align-items: center;">
+            <label for="distDirPath">
+                <span>目录</span>
+            </label>
+            <input class="form-control" readonly="readonly" type="text" id="distDirPath" style="flex: 1">
+            <div style="width: 3px;"></div>
+            <button class="btn btn-default" id="btnBrowserForDistDir">更改</button>
+            <div style="width: 3px;"></div>
+            <button class="btn btn-default" id="btn-open-video-library">打开</button>
+        </div>
+    </div>
+    <div style="flex: 1;"></div>
+    <div style="text-align: center;">
+        <button id="btn-close" class="btn btn-danger" onclick="window.close();">关闭</button>
+    </div>
+</div>
+
+
+<script>
+    window.$ = window.jQuery = require("jquery");
+    require("bootstrap");
+
+    (function () {
+
+        let root = document.querySelector("#root");
+
+        function windowRezieHandler() {
+            root.style.width = window.innerWidth + "px";
+            root.style.height = window.innerHeight + "px";
+        }
+
+        function main() {
+            windowRezieHandler();
+            window.onresize = windowRezieHandler;
+        }
+
+        main();
+    })();
+
+</script>
+
+<script src="settings.js"></script>
+</body>
+</html>

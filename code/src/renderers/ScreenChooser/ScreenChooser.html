@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选择要录制的视频源</title>
+
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
+
+    <style>
+        .screen-source-item {
+            display: flex;
+            flex-direction: row;
+            padding: 10px;
+            border-bottom: solid whitesmoke;
+        }
+
+        .screen-source-item:hover {
+            background-color: lightskyblue;
+        }
+
+        .screen-source-item-info {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding-left: 10px;
+        }
+
+        .screen-source-item-thumbnail img {
+            display: block;
+        }
+
+    </style>
+</head>
+<body style="margin: 0">
+<div id="root" style="padding: 10px;display: flex;flex-direction: column;">
+    <div id="container" style="padding-top: 10px;flex: 1;overflow: auto;">
+        正在加载 ...
+    </div>
+    <div style="height: 10px;"></div>
+    <div style="text-align: center;">
+        <button id="btn-close" class="btn btn-danger" onclick="window.close()">关闭</button>
+    </div>
+</div>
+
+<script>
+    window.$ = window.jQuery = require("jquery");
+    require("bootstrap");
+
+    (function () {
+
+        let root = document.querySelector("#root");
+
+        function windowRezieHandler() {
+            root.style.width = window.innerWidth + "px";
+            root.style.height = window.innerHeight + "px";
+        }
+
+        function main() {
+            windowRezieHandler();
+            window.onresize = windowRezieHandler;
+        }
+
+        main();
+    })();
+</script>
+
+<script src="ScreenChooser.js"></script>
+</body>
+</html>

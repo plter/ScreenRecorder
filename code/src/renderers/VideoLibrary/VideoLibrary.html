@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>视频库</title>
+
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
+
+
+    <style>
+        .panel-body {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .video-list-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            border-bottom: 1px solid lightgrey;
+            padding: 5px;
+            height: 46px;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .export-progress {
+            position: absolute;
+            height: 100%;
+            left: 0;
+            top: 0;
+            border-radius: 5px;
+            background-color: darkseagreen;
+        }
+
+        .export-progress-message {
+            color: dodgerblue;
+            z-index: 1000;
+        }
+
+        .video-list-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .video-list-item:hover > .video-list-item-operations {
+            display: flex;
+            z-index: 1000;
+        }
+
+        .video-list-item-file-name {
+            flex: 1;
+            z-index: 1000;
+        }
+
+        .video-list-item-operations {
+            display: none;
+        }
+
+        .panel-heading .operations {
+            width: 80px;
+        }
+    </style>
+
+</head>
+<body style="margin: 0;">
+<div id="root" style="padding: 5px;overflow: hidden;">
+    <div class="panel panel-default"
+         style="display: flex;flex-direction: column;width: 100%;height: 100%;">
+        <div id="header" class="panel-heading" style="display: flex;flex-direction: row;">
+            <div style="flex: 1;">视频文件</div>
+            <div class="operations">操作</div>
+        </div>
+        <div class="panel-body">
+        </div>
+    </div>
+</div>
+
+<script>
+
+    (function () {
+
+        let root = document.querySelector("#root");
+
+        function windowRezieHandler() {
+            root.style.width = window.innerWidth + "px";
+            root.style.height = window.innerHeight + "px";
+        }
+
+        function main() {
+            windowRezieHandler();
+            window.onresize = windowRezieHandler;
+        }
+
+        main();
+    })();
+
+    window.$ = window.jQuery = require("jquery");
+    require("bootstrap");
+
+</script>
+
+<script src="VideoLibrary.js"></script>
+</body>
+</html>

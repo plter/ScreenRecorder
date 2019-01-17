@@ -1,0 +1,6 @@
+.idea
+cmake-build-debug
+node_modules
+out
+.DS_Store
+package-lock.json

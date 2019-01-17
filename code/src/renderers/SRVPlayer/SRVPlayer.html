@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SRV播放器</title>
+
+    <link rel="stylesheet" href="../../lib/jquery-ui-1.12.1.custom/jquery-ui.min.css">
+    <link rel="stylesheet" href="../../lib/jquery-ui-1.12.1.custom/jquery-ui.theme.min.css">
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
+    <script>
+        window.$ = window.jQuery = require("jquery");
+        require("../../lib/jquery-ui-1.12.1.custom/jquery-ui.min");
+        require("bootstrap");
+    </script>
+</head>
+<body style="margin: 0">
+<div id="root" style="overflow: hidden;position: relative;">
+    <div id="status" style="text-align: center;z-index: 1000;">正在加载视频，请稍候...</div>
+    <video id="player" autoplay></video>
+    <div class="control-container" style="position: absolute;bottom: 70px;left: 50%;">
+        <div class="control"
+             style="position: absolute;left: -300px;width: 600px;display: flex;flex-direction: row;align-items: center;padding: 5px;background-color: rgba(0,0,0,0.3);border-radius: 5px;">
+            <div role="group" class="btn-group btn-group-sm">
+                <button id="btn-pause" class="btn btn-default btn-sm"><span style="color: darkred"
+                                                                            class="glyphicon glyphicon-pause"></span>
+                </button>
+                <button id="btn-play" class="btn btn-default btn-sm"><span style="color: green"
+                                                                           class="glyphicon glyphicon-play"></span>
+                </button>
+            </div>
+            <div style="width: 10px;"></div>
+            <div id="seek-bar" style="flex: 1;"></div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            $("#seek-bar").slider({
+                range: "min"
+            });
+        })();
+    </script>
+</div>
+<script>
+    (function () {
+
+        let root = document.querySelector("#root");
+        let player = document.querySelector("#player");
+
+        function windowRezieHandler() {
+            root.style.width = window.innerWidth + "px";
+            root.style.height = window.innerHeight + "px";
+            player.width = window.innerWidth;
+            player.height = window.innerHeight;
+        }
+
+        function main() {
+            windowRezieHandler();
+            window.onresize = windowRezieHandler;
+        }
+
+        main();
+    })();
+</script>
+<script>
+    window.jQuery.getScript("SRVPlayer.js");
+</script>
+</body>
+</html>
