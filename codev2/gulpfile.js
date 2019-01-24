@@ -9,7 +9,7 @@ const PROJECT_DIR = __dirname;
 const OUTPUT_DIR = path.join(PROJECT_DIR, "dist");
 const OUTPUT_OBJ_DIR = path.join(OUTPUT_DIR, "obj");
 const OUTPUT_APP_DIR = path.join(OUTPUT_DIR, "app");
-const MODE = "production";//or production
+const MODE = "dev";//or production
 
 function copyPackageJson(cb) {
     gulp.src("package.json").pipe(gulp.dest(OUTPUT_APP_DIR));
@@ -51,7 +51,12 @@ function run(cb) {
     cb();
 }
 
-module.exports.build = gulp.series(copyPackageJson, compileMain, copyRendererIndex);
+function copyResFiles(cb) {
+    gulp.src(path.join(PROJECT_DIR, "src", "res", "**")).pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "res")));
+    cb();
+}
+
+module.exports.build = gulp.series(copyPackageJson, compileMain, copyRendererIndex, copyResFiles);
 module.exports.default = module.exports.build;
 module.exports.BuildAndRun = gulp.series(module.exports.build, run);
 
