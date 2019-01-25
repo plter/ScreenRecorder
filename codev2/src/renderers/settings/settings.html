@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>配置面板</title>
+
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../lib/fontawesome-free-5.6.3-web/css/all.css">
+</head>
+<body style="margin: 0;">
+<div id="root" style="display: flex;flex-direction: column;padding: 10px;">
+    <div>
+        <div style="font-weight: bold;font-size: 12pt;">采样率(单位Bit/S)：</div>
+        <div style="height: 5px;"></div>
+        <div style="display: flex;align-items: center;">
+            <label for="audioBpsInput">音频</label>
+            <input class="form-control" type="number" id="audioBpsInput" style="flex: 1">
+            <div style="width: 10px;"></div>
+            <label for="videoBpsInput">视频</label>
+            <input class="form-control" type="number" id="videoBpsInput" style="flex: 1">
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div style="display: flex;flex-direction: column;">
+        <div style="font-weight: bold;font-size: 12pt;">视频库：</div>
+        <div style="height: 5px;"></div>
+        <div style="display: flex;flex-direction: row;align-items: center;">
+            <label for="destDirPath">
+                <span>目录</span>
+            </label>
+            <input class="form-control" readonly="readonly" type="text" id="destDirPath" style="flex: 1">
+            <div style="width: 3px;"></div>
+            <div class="btn-group" role="group">
+                <button class="btn btn-outline-dark" id="btnBrowserForDistDir"><span class="fa fa-folder-open"></span>
+                </button>
+                <button class="btn btn-outline-dark" id="btn-open-video-library"><span class="fa fa-film"></span>
+                </button>
+                <button class="btn btn-outline-dark" id="btn-open-in-file"><span class="fa fa-eye"></span></button>
+            </div>
+        </div>
+    </div>
+    <div style="flex: 1;"></div>
+    <div style="text-align: center;">
+        <button id="btn-close" class="btn btn-dark" onclick="window.close();">关闭</button>
+    </div>
+</div>
+
+
+<script>
+    window.$ = window.jQuery = require("jquery");
+    window.electron = require("electron");
+    window.path = require("path");
+    window.fs = require("fs");
+    window.appPath = window.electron.remote.app.getAppPath();
+    require("popper.js");
+    require("bootstrap");
+
+    require("./settings");
+</script>
+</body>
+</html>

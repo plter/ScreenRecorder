@@ -34,10 +34,10 @@ let Main = {
             height: 80,
             resizable: false,
             fullscreenable: false,
+            title: "ScreenRecorder",
             maximizable: false,
             webPreferences: {
-                nodeIntegration: true,
-                nodeIntegrationInWorker: true
+                nodeIntegration: true
             }
         };
         if (os.type() === "Linux") {

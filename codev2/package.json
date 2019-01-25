@@ -1,6 +1,6 @@
 {
   "name": "screen-recorder",
-  "version": "1.0.0",
+  "version": "2019.1.26",
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
