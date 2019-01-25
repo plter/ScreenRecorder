@@ -1,19 +1,63 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    <title>ScreenRecorder</title>
+
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../lib/fontawesome-free-5.6.3-web/css/all.css">
+
+    <style>
+        .dropdown-menu li a .glyphicon {
+            margin-right: 10px;
+        }
+    </style>
 
     <script>
-      // You can also require other files to run in this process
-      require('./renderer.js')
+        window.$ = window.jQuery = require("jquery");
+        require("popper.js");
+        require("bootstrap");
     </script>
-  </body>
+</head>
+<body style="margin: 0;background-color: rgba(0,0,0,0)">
+<div id="root" style="display: flex;flex-direction: column;font-size: 12pt;">
+    <div style="flex: 1;"></div>
+    <div style="display: flex;flex-direction: row;align-items: center;background-color: white;padding: 10px;">
+        <a href="#" class="btn btn-outline-info" id="btn-show-main-menu">
+            <span class="fa fa-bars"></span>
+        </a>
+        <div style="width: 3px;"></div>
+        <div class="btn-group" role="group">
+            <button id="btn-start-or-stop" class="btn btn-outline-info"><span class="fa fa-circle"></span>
+            </button>
+            <button id="btn-pause-or-resume" class="btn btn-outline-info"><span class="fa fa-pause"></span>
+            </button>
+        </div>
+        <div style="width: 10px"></div>
+        <div style="text-align: center;display: flex;flex: 1;flex-direction: row;align-items: center;">
+            <label for="select-audio-input" style="display: inline-block;">音频输入</label>
+            <select style="display: inline-block;flex: 1;" class="form-control" id="select-audio-input">
+            </select>
+        </div>
+    </div>
+    <div style="flex: 1;"></div>
+</div>
+</body>
+
+<script>
+
+    (function () {
+
+        let rootDiv = document.querySelector("#root");
+
+        function resetRootByWindowSize() {
+            rootDiv.style.width = window.innerWidth + "px";
+            rootDiv.style.height = window.innerHeight + "px";
+        }
+
+        resetRootByWindowSize();
+
+        window.onresize = resetRootByWindowSize;
+    })();
+</script>
 </html>

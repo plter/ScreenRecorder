@@ -11,23 +11,21 @@ const OUTPUT_OBJ_DIR = path.join(OUTPUT_DIR, "obj");
 const OUTPUT_APP_DIR = path.join(OUTPUT_DIR, "app");
 const MODE = "dev";//or production
 
-function copyPackageJson(cb) {
-    gulp.src("package.json").pipe(gulp.dest(OUTPUT_APP_DIR));
-    cb();
+function copyPackageJson() {
+    return gulp.src("package.json").pipe(gulp.dest(OUTPUT_APP_DIR));
 }
 
-function compileMain(cb) {
+function compileMain() {
     js2wc.jsfile2wcfile(path.join(PROJECT_DIR, "main.js"), path.join(OUTPUT_OBJ_DIR, "main.cpp"));
     shelljs.exec(
         `docker run --rm -t -v ${OUTPUT_OBJ_DIR}:/Source -w /Source xtiqin/emsdk emcc \
         -std=c++11 --bind -Wall ${MODE === "production" ? "-O2" : ""} \
         -s ENVIRONMENT=node \
         main.cpp -o main.js`);
-    gulp.src([
+    return gulp.src([
         path.join(OUTPUT_OBJ_DIR, "main.js"),
         path.join(OUTPUT_OBJ_DIR, "main.wasm"),
     ]).pipe(gulp.dest(path.join(OUTPUT_APP_DIR)));
-    cb();
 }
 
 function npmInstall(cb) {
@@ -39,10 +37,9 @@ function npmInstall(cb) {
     cb();
 }
 
-function copyRendererIndex(cb) {
-    gulp.src(path.join(PROJECT_DIR, "src", "renderers", "index", "index.html"))
+function copyRendererIndex() {
+    return gulp.src(path.join(PROJECT_DIR, "src", "renderers", "index", "index.html"))
         .pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "renderers", "index")));
-    cb();
 }
 
 function run(cb) {
@@ -51,12 +48,16 @@ function run(cb) {
     cb();
 }
 
-function copyResFiles(cb) {
-    gulp.src(path.join(PROJECT_DIR, "src", "res", "**")).pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "res")));
-    cb();
+function copyResFiles() {
+    return gulp.src(path.join(PROJECT_DIR, "src", "res", "**")).pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "res")));
 }
 
-module.exports.build = gulp.series(copyPackageJson, compileMain, copyRendererIndex, copyResFiles);
+function copyLibFiles() {
+    return gulp.src(path.join(PROJECT_DIR, "src", "lib", "**")).pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "lib")));
+}
+
+module.exports.build = gulp.series(copyPackageJson, compileMain, copyRendererIndex, copyResFiles, copyLibFiles);
 module.exports.default = module.exports.build;
 module.exports.BuildAndRun = gulp.series(module.exports.build, run);
+module.exports.BuildAndInstallAndRun = gulp.series(module.exports.build, npmInstall, run);
 

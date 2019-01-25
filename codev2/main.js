@@ -1,17 +1,30 @@
 const electron = require('electron');
 const ipcMain = electron.ipcMain;
 const app = electron.app;
-// Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 const globalShortcut = electron.globalShortcut;
 const os = require("os");
 
-class Main {
+let Main = {
 
-    constructor() {
+    run() {
         this.addListeners();
-    }
+
+        if (app.isReady()) {
+            this.initProperties();
+        } else {
+            app.on('ready', () => {
+                this.initProperties();
+            });
+        }
+    },
+
+    initProperties() {
+        this.createTray();
+        this.createWindow();
+        this.registerGlobalShortcuts();
+    },
 
     createWindow() {
         // Create the browser window.
@@ -21,10 +34,14 @@ class Main {
             height: 80,
             resizable: false,
             fullscreenable: false,
-            maximizable: false
+            maximizable: false,
+            webPreferences: {
+                nodeIntegration: true,
+                nodeIntegrationInWorker: true
+            }
         };
         if (os.type() === "Linux") {
-            options.icon = path.join(__dirname, "res", "icons", "ScreenRecorder.png");
+            options.icon = path.join(__dirname, "src", "res", "icons", "ScreenRecorder.png");
         }
 
         this.mainWindow = new BrowserWindow(options);
@@ -42,10 +59,10 @@ class Main {
             // when you should delete the corresponding element.
             this.mainWindow = null;
         });
-    }
+    },
 
     createTray() {
-        this.tray = new electron.Tray(path.join(__dirname, "res", "images", "icon_16.png"));
+        this.tray = new electron.Tray(path.join(__dirname, "src", "res", "images", "icon_16.png"));
         const contextMenu = electron.Menu.buildFromTemplate([
             {
                 label: '退出',
@@ -57,15 +74,9 @@ class Main {
         ]);
         this.tray.setToolTip('This is my application.');
         this.tray.setContextMenu(contextMenu);
-    }
+    },
 
     addListeners() {
-        app.on('ready', () => {
-            this.createTray();
-            this.createWindow();
-            this.registerGlobalShortcuts();
-        });
-
         app.on('window-all-closed', () => {
             app.quit();
         });
@@ -82,21 +93,21 @@ class Main {
 
 
         ipcMain.on("stopped", event => {
-            this.tray.setImage(path.join(__dirname, "res", "images", "icon_16.png"));
+            this.tray.setImage(path.join(__dirname, "src", "res", "images", "icon_16.png"));
             event.returnValue = 1;
         });
 
         ipcMain.on("paused", event => {
-            this.tray.setImage(path.join(__dirname, "res", "images", "icon_paused_16.png"));
+            this.tray.setImage(path.join(__dirname, "src", "res", "images", "icon_paused_16.png"));
             event.returnValue = 1;
         });
 
         ipcMain.on("recording", event => {
-            this.tray.setImage(path.join(__dirname, "res", "images", "icon_recording_16.png"));
+            this.tray.setImage(path.join(__dirname, "src", "res", "images", "icon_recording_16.png"));
             event.returnValue = 1;
         });
 
-    }
+    },
 
     registerGlobalShortcuts() {
         //Start or stop button
@@ -107,19 +118,19 @@ class Main {
         globalShortcut.register("CommandOrControl+9", () => {
             this.sendPauseOrResumeButtonClickedEvent();
         });
-    }
+    },
 
     sendPauseOrResumeButtonClickedEvent() {
         this.mainWindow.webContents.send("pauseOrResume");
-    }
+    },
 
     sendStartOrStopButtonClickedEvent() {
         this.mainWindow.webContents.send("startOrStop");
-    }
+    },
 
     unregisterAllGlobalShortcuts() {
         globalShortcut.unregisterAll();
     }
-}
+};
 
-new Main();
+Main.run();
