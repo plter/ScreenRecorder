@@ -1,7 +1,7 @@
 {
   "name": "screen-recorder",
   "version": "2019.1.26",
-  "description": "A minimal Electron application",
+  "description": "Free screen recorder runs on all platforms",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
@@ -19,6 +19,7 @@
   "dependencies": {
     "bootstrap": "^4.2.1",
     "jquery": "^3.3.1",
-    "popper.js": "^1.14.6"
+    "popper.js": "^1.14.6",
+    "vue": "^2.5.22"
   }
 }

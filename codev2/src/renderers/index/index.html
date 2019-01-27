@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>ScreenRecorder</title>
@@ -25,7 +25,12 @@
         <div style="width: 10px"></div>
         <div style="text-align: center;display: flex;flex: 1;flex-direction: row;align-items: center;">
             <label for="select-audio-input" style="display: inline-block;">音频输入</label>
-            <select style="display: inline-block;flex: 1;" class="form-control" id="select-audio-input">
+            <select v-on:change="selectChangeHandler" v-model="selected" style="display: inline-block;flex: 1;"
+                    class="form-control"
+                    id="select-audio-input">
+                <option v-for="o in options" :value="o.deviceId">
+                    {{o.label}}
+                </option>
             </select>
         </div>
     </div>
@@ -39,6 +44,7 @@
     window.electron = require("electron");
     window.appPath = window.electron.remote.app.getAppPath();
     window.path = require("path");
+    window.Vue = require("vue/dist/vue.min");
     require("popper.js");
     require("bootstrap");
     require("./IndexEntry");

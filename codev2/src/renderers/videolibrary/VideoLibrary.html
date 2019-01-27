@@ -76,33 +76,15 @@
 </div>
 
 <script>
-
-    (function () {
-
-        let root = document.querySelector("#root");
-
-        function windowRezieHandler() {
-            root.style.width = window.innerWidth + "px";
-            root.style.height = window.innerHeight + "px";
-        }
-
-        function main() {
-            windowRezieHandler();
-            window.onresize = windowRezieHandler;
-        }
-
-        main();
-    })();
-
     window.$ = window.jQuery = require("jquery");
     window.fs = require("fs");
     window.electron = require("electron");
     window.appPath = window.electron.remote.app.getAppPath();
     window.path = require("path");
+    window.Vue = require("vue/dist/vue.min");
     require("popper.js");
     require("bootstrap");
     require("./VideoLibrary");
-
 </script>
 
 </body>

@@ -26,6 +26,12 @@ const LocalStorageManager = {
     },
     setVideoBps: function (value) {
         localStorage.setItem(`${LS_KEY_BASE_NS}_videoBps`, value);
+    },
+    setSelectedAudioDeviceId(deviceId) {
+        localStorage.setItem(`${LS_KEY_BASE_NS}_SelectedAudioDeviceId`, deviceId);
+    },
+    getSelectedAudioDeviceId() {
+        return localStorage.getItem(`${LS_KEY_BASE_NS}_SelectedAudioDeviceId`);
     }
 };
 

@@ -8,6 +8,7 @@ const RecordStatus = {
     PAUSED: 3,
     RETRIEVING_SCREEN_STREAM: 4,
     RETRIEVING_AUDIO_STREAM: 5,
+    UNKNOWN: 6
 };
 
 module.exports = RecordStatus;
