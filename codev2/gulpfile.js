@@ -97,6 +97,14 @@ createBuildTarget(
     path.join(OUTPUT_APP_DIR, "src", "renderers", "videolibrary")
 );
 
+createBuildTarget(
+    "BuildRendererScreenChooser",
+    path.join(PROJECT_DIR, "src", "renderers", "ScreenChooser", "ScreenChooser.html"),
+    path.join(PROJECT_DIR, "src", "renderers", "ScreenChooser", "ScreenChooser.js"),
+    path.join(OUTPUT_OBJ_DIR, "src", "renderers", "ScreenChooser"),
+    path.join(OUTPUT_APP_DIR, "src", "renderers", "ScreenChooser")
+);
+
 function buildRendererAbout() {
     return gulp.src(path.join(PROJECT_DIR, "src", "renderers", "about", "**"))
         .pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "renderers", "about")));
@@ -116,6 +124,11 @@ function copyLibFiles() {
     return gulp.src(path.join(PROJECT_DIR, "src", "lib", "**")).pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "lib")));
 }
 
+function buildRendererPendingToStart() {
+    return gulp.src(path.join(PROJECT_DIR, "src", "renderers", "PendingToStart", "PendingToStart.html"))
+        .pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "renderers", "PendingToStart")));
+}
+
 module.exports.build = gulp.series(
     copyPackageJson,
     compileMain,
@@ -124,7 +137,9 @@ module.exports.build = gulp.series(
     copyResFiles,
     copyLibFiles,
     module.exports.BuildRendererSettings,
-    module.exports.BuildRendererVideoLibrary
+    module.exports.BuildRendererVideoLibrary,
+    module.exports.BuildRendererScreenChooser,
+    buildRendererPendingToStart
 );
 
 module.exports.default = module.exports.build;

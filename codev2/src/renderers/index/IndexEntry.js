@@ -3,6 +3,7 @@ const FlexBoxApplication = require("../commons/FlexBoxApplication");
 const LocalStorageManager = require("../commons/LocalStorageManager");
 const AudioDeviceSelectorConfig = require("./AudioDeviceSelectorConfig");
 const RecordStatus = require("./RecordStatus");
+const CheckBoxIncludeComputerAudioConfig = require("./CheckBoxIncludeComputerAudioConfig");
 
 class Entry extends FlexBoxApplication {
 
@@ -22,7 +23,7 @@ class Entry extends FlexBoxApplication {
 
     buildUI() {
         this.buildMainMenu();
-        this._selectorAudioInput = new window.Vue(AudioDeviceSelectorConfig.create("#select-audio-input"));
+        this._selectorAudioInput = new window.Vue(AudioDeviceSelectorConfig.create("#select-audio-input-container"));
         this._btnStartOrStop = document.querySelector("#btn-start-or-stop");
         this._btnPauseOrResume = document.querySelector("#btn-pause-or-resume");
     }
@@ -46,15 +47,50 @@ class Entry extends FlexBoxApplication {
         window.electron.ipcRenderer.on("pauseOrResume", this.pauseOrResumeHandler.bind(this));
         this._btnPauseOrResume.onclick = this.pauseOrResumeHandler.bind(this);
         this._btnStartOrStop.onclick = this.startOrStopHandler.bind(this);
+        $("#btn-show-donate-window").click(e => Dialogs.showDonateDialog());
+        $("#btn-show-settings-window").click(e => Dialogs.showSettingsDialog());
+        $("#btn-show-video-library").click(e => Dialogs.showVideoLibrary());
     }
 
-    startOrStopHandler() {
+
+    async startOrStopHandler() {
         if (this.recordState == RecordStatus.STOPPED) {
-            this.recordState = RecordStatus.RECORDING;
+            this.recordState = RecordStatus.RETRIEVING_SCREEN_STREAM;
+            let width = screen.width * 2;
+            let height = screen.height * 2;
+            this._currentStream = await navigator.mediaDevices.getUserMedia({
+                audio: false,
+                video: {
+                    mandatory: {
+                        chromeMediaSource: 'desktop',
+                        minWidth: width,
+                        maxWidth: width,
+                        minHeight: height,
+                        maxHeight: height
+                    }
+                }
+            });
+            if (this._selectorAudioInput.checked) {
+                this.recordState = RecordStatus.RETRIEVING_AUDIO_STREAM;
+                let audioStream = await navigator.mediaDevices.getUserMedia({
+                    video: false,
+                    audio: this._selectorAudioInput.getSelectedAudioDevice()
+                });
+                for (let at of audioStream.getAudioTracks()) {
+                    this._currentStream.addTrack(at);
+                }
+            }
+            this.recordState = RecordStatus.PENDING_TO_START_RECORD;
+            window.electron.remote.getCurrentWindow().minimize();
+            Dialogs.showPendingToStartWindow().once("closed", this.startRecord.bind(this));
         } else if (this.recordState == RecordStatus.RECORDING) {
-            this.recordState = RecordStatus.STOPPED;
+            //TODO
         }
-        console.log("TODO startOrStop");
+    }
+
+    startRecord() {
+        this.recordState = RecordStatus.RECORDING;
+        //TODO
     }
 
     pauseOrResumeHandler() {
@@ -68,12 +104,12 @@ class Entry extends FlexBoxApplication {
 
     buildMainMenu() {
         this._mainMenu = new window.electron.remote.Menu();
-        this._mainMenu.append(this.createMenuItem("视频库", () => Dialogs.showVideoLibrary(), window.path.join(window.appPath, "src", "res", "icons", "video_library_18.png")));
-        this._mainMenu.append(this.createMenuItem("设置", () => Dialogs.showSettingsDialog(), window.path.join(window.appPath, "src", "res", "icons", "MaterialDesignIcons", "ic_settings_black_18dp.png")));
-        this._mainMenu.append(this.createMenuItem(undefined, undefined, undefined, "separator"));
-        this._mainMenu.append(this.createMenuItem("捐助", () => Dialogs.showDonateDialog(), window.path.join(window.appPath, "src", "res", "icons", "wechat_18.png")));
+        // this._mainMenu.append(this.createMenuItem("视频库", () => Dialogs.showVideoLibrary(), window.path.join(window.appPath, "src", "res", "icons", "video_library_18.png")));
+        // this._mainMenu.append(this.createMenuItem("设置", () => Dialogs.showSettingsDialog(), window.path.join(window.appPath, "src", "res", "icons", "MaterialDesignIcons", "ic_settings_black_18dp.png")));
+        // this._mainMenu.append(this.createMenuItem(undefined, undefined, undefined, "separator"));
+        // this._mainMenu.append(this.createMenuItem("捐助", () => Dialogs.showDonateDialog(), window.path.join(window.appPath, "src", "res", "icons", "wechat_18.png")));
         this._mainMenu.append(this.createMenuItem("关于 ScreenRecorder", () => Dialogs.showAboutDialog(), window.path.join(window.appPath, "src", "res", "icons", "MaterialDesignIcons", "ic_info_outline_black_18dp.png")));
-        this._mainMenu.append(this.createMenuItem(undefined, undefined, undefined, "separator"));
+        // this._mainMenu.append(this.createMenuItem(undefined, undefined, undefined, "separator"));
         this._mainMenu.append(this.createMenuItem("退出", () => window.close(), window.path.join(window.appPath, "src", "res", "icons", "MaterialDesignIcons", "ic_highlight_off_black_18dp.png")));
 
     }
@@ -90,21 +126,25 @@ class Entry extends FlexBoxApplication {
     set recordState(state) {
         this._recordState = state;
         switch (state) {
+            case RecordStatus.STOPPED:
+                window.electron.ipcRenderer.send("stopped");
+                this._btnStartOrStop.disabled = false;
+                this._btnPauseOrResume.disabled = true;
+                this._btnStartOrStop.innerHTML = "<span class='fa fa-circle'></span>";
+                break;
             case RecordStatus.PAUSED:
+                window.electron.ipcRenderer.send("paused");
                 this._btnStartOrStop.disabled = true;
                 this._btnPauseOrResume.disabled = false;
                 this._btnPauseOrResume.innerHTML = "<span class='fa fa-sync'></span>";
                 break;
             case RecordStatus.RECORDING:
+                window.electron.ipcRenderer.send("recording");
                 this._btnStartOrStop.disabled = false;
                 this._btnPauseOrResume.disabled = false;
                 this._btnPauseOrResume.innerHTML = "<span class='fa fa-pause'></span>";
                 this._btnStartOrStop.innerHTML = "<span class='fa fa-stop'></span>";
                 break;
-            default:
-                this._btnStartOrStop.disabled = false;
-                this._btnPauseOrResume.disabled = true;
-                this._btnStartOrStop.innerHTML = "<span class='fa fa-circle'></span>";
         }
     }
 

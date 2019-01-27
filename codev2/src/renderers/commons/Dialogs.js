@@ -45,5 +45,34 @@ module.exports = {
             }
         });
         win.loadFile(window.path.join(window.appPath, "src", "renderers", "videolibrary", "VideoLibrary.html"));
+    },
+
+    showScreenChooser() {
+        let win = new window.electron.remote.BrowserWindow({
+            width: 500,
+            height: 600,
+            modal: true,
+            title: "选择要录制的屏幕",
+            webPreferences: {
+                nodeIntegration: true
+            },
+            parent: window.electron.remote.getCurrentWindow()
+        });
+        win.loadFile(window.path.join(window.appPath, "src", "renderers", "ScreenChooser", "ScreenChooser.html"));
+        return win;
+    },
+
+    showPendingToStartWindow() {
+        let win = new window.electron.remote.BrowserWindow({
+            width: 320,
+            height: 240,
+            modal: true,
+            title: "准备开始录制",
+            webPreferences: {
+                nodeIntegration: true
+            }
+        });
+        win.loadFile(window.path.join(window.appPath, "src", "renderers", "PendingToStart", "PendingToStart.html"));
+        return win;
     }
 };

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>等待开始</title>
+</head>
+<body style="margin: 0;">
+<div id="root"
+     style="display: flex;flex-direction: row;align-items: center;background-color: #666666">
+    <div style="text-align: center;font-size: 72pt;flex: 1;">
+        <span id="text-label" style="color: white;"></span>
+    </div>
+</div>
+<script>
+    (function () {
+
+        var root = document.querySelector("#root");
+        var textLabel = document.querySelector("#text-label");
+        var count = 0;
+
+        function window_resizeHandler() {
+            root.style.width = window.innerWidth + "px";
+            root.style.height = window.innerHeight + "px";
+        }
+
+        function addListeners() {
+            window.onresize = window_resizeHandler;
+        }
+
+        function showCount() {
+            textLabel.innerHTML = count + "";
+        }
+
+        function startTimer() {
+            count = 3;
+            showCount();
+            var timerId = setInterval(function () {
+                count--;
+                showCount();
+                if (count <= 0) {
+                    clearInterval(timerId);
+                    window.close();
+                }
+            }, 1000);
+        }
+
+        function main() {
+            addListeners();
+            window_resizeHandler();
+
+            startTimer();
+        }
+
+        main();
+    })();
+</script>
+</body>
+</html>

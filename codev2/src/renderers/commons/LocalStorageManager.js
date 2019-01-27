@@ -32,6 +32,39 @@ const LocalStorageManager = {
     },
     getSelectedAudioDeviceId() {
         return localStorage.getItem(`${LS_KEY_BASE_NS}_SelectedAudioDeviceId`);
+    },
+    setSelectedScreen(screen) {
+        localStorage.setItem(`${LS_KEY_BASE_NS}_SelectedScreen`, screen);
+    },
+    getSelectedScreen() {
+        return localStorage.getItem(`${LS_KEY_BASE_NS}_SelectedScreen`);
+    },
+    clearSelectedScreen() {
+        localStorage.removeItem(`${LS_KEY_BASE_NS}_SelectedScreen`);
+    },
+    /**
+     *
+     * @param value yes or no
+     */
+    setIfIncludeAudio(value) {
+        localStorage.setItem(`${LS_KEY_BASE_NS}_ifIncludeAudio`, value);
+    },
+    getIfIncludeAudio() {
+        return localStorage.getItem(`${LS_KEY_BASE_NS}_ifIncludeAudio`) || "yes";
+    },
+    /**
+     *
+     * @param value yes or no
+     */
+    setIfIncludeComputerAudio(value) {
+        localStorage.setItem(`${LS_KEY_BASE_NS}_ifIncludeComputerAudio`, value);
+    },
+    /**
+     * 是否包括电脑声音
+     * @returns {string | string}
+     */
+    getIfIncludeComputerAudio() {
+        return localStorage.getItem(`${LS_KEY_BASE_NS}_ifIncludeComputerAudio`) || "no";
     }
 };
 

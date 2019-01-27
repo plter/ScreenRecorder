@@ -10,29 +10,45 @@
 </head>
 <body style="margin: 0;background-color: rgba(0,0,0,0);">
 <div id="root" style="display: flex;flex-direction: column;font-size: 12pt;">
-    <div style="flex: 1;"></div>
-    <div style="display: flex;flex-direction: row;align-items: center;background-color: white;padding: 10px;">
-        <a href="#" class="btn btn-outline-dark" id="btn-show-main-menu">
-            <span class="fa fa-bars"></span>
-        </a>
-        <div style="width: 3px;"></div>
+    <div style="height: 10px;"></div>
+    <div style="display: flex;flex-direction: row;align-items: center;background-color: white;padding:0 10px;">
         <div class="btn-group" role="group">
-            <button id="btn-start-or-stop" class="btn btn-outline-dark"><span class="fa fa-circle"></span>
+            <a href="#" class="btn btn-outline-dark" id="btn-show-main-menu">
+                <span class="fa fa-bars"></span>
+            </a>
+            <a href="#" class="btn btn-outline-dark" id="btn-show-donate-window">
+                <i class="fab fa-weixin"></i>
+            </a>
+            <a href="#" class="btn btn-outline-dark" id="btn-show-settings-window">
+                <span class="fa fa-cog"></span>
+            </a>
+            <a href="#" class="btn btn-outline-dark" id="btn-show-video-library">
+                <span class="fa fa-film"></span>
+            </a>
+        </div>
+        <div style="flex: 1;"></div>
+        <div class="btn-group" role="group">
+            <button id="btn-start-or-stop" class="btn btn-outline-danger"><span class="fa fa-circle"></span>
             </button>
-            <button id="btn-pause-or-resume" class="btn btn-outline-dark"><span class="fa fa-pause"></span>
+            <button id="btn-pause-or-resume" class="btn btn-outline-danger"><span class="fa fa-pause"></span>
             </button>
         </div>
-        <div style="width: 10px"></div>
-        <div style="text-align: center;display: flex;flex: 1;flex-direction: row;align-items: center;">
-            <label for="select-audio-input" style="display: inline-block;">音频输入</label>
-            <select v-on:change="selectChangeHandler" v-model="selected" style="display: inline-block;flex: 1;"
-                    class="form-control"
-                    id="select-audio-input">
-                <option v-for="o in options" :value="o.deviceId">
-                    {{o.label}}
-                </option>
-            </select>
-        </div>
+    </div>
+    <div style="height: 10px"></div>
+    <div id="select-audio-input-container"
+         style="text-align: center;display: flex;flex-direction: row;align-items: center;padding: 0 10px;">
+        <input type="checkbox" id="checkbox-include-audio-input" v-model="checked">
+        <div style="width: 3px;"></div>
+        <label for="checkbox-include-audio-input" style="display: flex;margin: 0;">音频输入</label>
+        <div style="width: 3px;"></div>
+        <select v-on:change="selectChangeHandler" :disabled="!checked" v-model="selected"
+                style="display: inline-block;flex: 1;"
+                class="form-control"
+                id="select-audio-input">
+            <option v-for="o in options" :value="o.deviceId">
+                {{o.label}}
+            </option>
+        </select>
     </div>
     <div style="flex: 1;"></div>
 </div>

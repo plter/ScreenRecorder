@@ -4,7 +4,17 @@ const AudioDeviceSelectorConfig = {
     create(el) {
         return {
             el: el,
-            data: {options: [], selected: undefined, optionsMap: null},
+            data: {
+                options: [],
+                selected: undefined,
+                optionsMap: null,
+                checked: LocalStorageManager.getIfIncludeAudio() === "yes"
+            },
+            watch: {
+                checked: function (value, oldValue) {
+                    LocalStorageManager.setIfIncludeAudio(value ? "yes" : "no");
+                }
+            },
             methods: {
                 selectChangeHandler(e) {
                     LocalStorageManager.setSelectedAudioDeviceId(e.target.value);
