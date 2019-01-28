@@ -6,13 +6,13 @@ This a SRV file data sample.
 
 | Length | Type | Description |
 | --- | --- | --- |
-| 8 | uint64 | timestamp(for example: 1544588329352684) |
+| 4 | uint32 | timestamp(for example: 10000) |
 | 4 | uint32 | data length(for example: 100) |
 | 100 | BIN | data |
-| 8 | uint64 | timestamp |
+| 4 | uint64 | timestamp |
 | 4 | uint32 | data length(for example: 120) |
 | 120 | BIN | data |
-| 8 | uint64 | timestamp |
+| 4 | uint64 | timestamp |
 | 4 | uint32 | data length(for example: 90) |
 | 90 | BIN | data |
 | ... | | |

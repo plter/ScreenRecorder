@@ -16,8 +16,8 @@ class StreamQueue {
         return this._distFile;
     }
 
-    appendData(blob) {
-        this._blobs.push(blob);
+    appendData(blob, timeStamp) {
+        this._blobs.push({data: blob, time: timeStamp});
         this.checkToStartWrite();
     }
 
@@ -29,12 +29,23 @@ class StreamQueue {
     }
 
     shiftAndWrite() {
-        this._fileReader.readAsArrayBuffer(this._blobs.shift());
+        this._currentBlob = this._blobs.shift();
+        this._fileReader.readAsArrayBuffer(this._currentBlob.data);
     }
 
     fileLoadedHandler() {
-        let buffer = Buffer.from(this._fileReader.result);
-        window.fs.appendFileSync(this.distFile, buffer);
+        let dataArrayBuffer = this._fileReader.result;
+
+        let sizeBuffer = Buffer.alloc(4);
+        sizeBuffer.writeUInt32LE(dataArrayBuffer.byteLength, 0);
+
+        let timeBuffer = Buffer.alloc(4);
+        let time = Math.floor(this._currentBlob.time);
+        timeBuffer.writeUInt32LE(time, 0);
+
+        window.fs.appendFileSync(this.distFile, timeBuffer);
+        window.fs.appendFileSync(this.distFile, sizeBuffer);
+        window.fs.appendFileSync(this.distFile, Buffer.from(dataArrayBuffer));
 
         if (this._blobs.length > 0) {
             this.shiftAndWrite();

@@ -63,14 +63,17 @@
 
 </head>
 <body style="margin: 0;">
-<div id="root" style="padding: 5px;overflow: hidden;">
-    <div class="card"
-         style="display: flex;flex-direction: column;width: 100%;height: 100%;">
+<div id="root" style="padding: 5px;overflow: hidden;display: flex;">
+    <div class="card" id="srv-list"
+         style="display: flex;flex-direction: column;width: 100%;height: 100%;overflow: auto;">
         <div id="header" class="card-header" style="display: flex;flex-direction: row;">
             <div style="flex: 1;">视频文件</div>
             <div class="operations">操作</div>
         </div>
-        <div class="panel-body">
+        <div class="card-body" style="padding: 0">
+            <div v-for="f in srvFiles">
+                {{f}}
+            </div>
         </div>
     </div>
 </div>

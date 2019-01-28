@@ -4,6 +4,7 @@ const webpackStream = require('webpack-stream');
 const webpack = require('webpack');
 const js2wc = require('js2wc');
 const shelljs = require("shelljs");
+const os = require("os");
 
 const PROJECT_DIR = __dirname;
 const OUTPUT_DIR = path.join(PROJECT_DIR, "dist");
@@ -129,6 +130,57 @@ function buildRendererPendingToStart() {
         .pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "renderers", "PendingToStart")));
 }
 
+
+function copyFfmpeg(cb) {
+    let type = os.type();
+    let arch = os.arch();
+    switch (type) {
+        case "Darwin":
+            switch (arch) {
+                case "x64":
+                    gulp.src(path.join(PROJECT_DIR, "src", "bin", "ffmpeg_osx64")).pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "bin")));
+                    break;
+                default:
+                    console.error(`Unsupported arch for platform ${type}`);
+                    break;
+            }
+            break;
+        case "Windows_NT":
+            switch (arch) {
+                case "x64":
+                    gulp.src(path.join(PROJECT_DIR, "src", "bin", "ffmpeg_win64.exe")).pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "bin")));
+                    break;
+                case "x32":
+                case "ia32":
+                    gulp.src(path.join(PROJECT_DIR, "src", "bin", "ffmpeg_win32.exe")).pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "bin")));
+                    break;
+                default:
+                    console.error(`Unsupported arch for platform ${type}`);
+                    break;
+            }
+            break;
+        case "Linux":
+            switch (arch) {
+                case "x64":
+                    gulp.src(path.join(PROJECT_DIR, "src", "bin", "ffmpeg_linux64.exe")).pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "bin")));
+                    break;
+                case "x32":
+                case "ia32":
+                    gulp.src(path.join(PROJECT_DIR, "src", "bin", "ffmpeg_linux32.exe")).pipe(gulp.dest(path.join(OUTPUT_APP_DIR, "src", "bin")));
+                    break;
+                default:
+                    console.error(`Unsupported arch for platform ${type}`);
+                    break;
+            }
+            break;
+        default:
+            console.error("Unsupported platform");
+            break;
+    }
+    cb();
+}
+
+
 module.exports.build = gulp.series(
     copyPackageJson,
     compileMain,
@@ -138,8 +190,8 @@ module.exports.build = gulp.series(
     copyLibFiles,
     module.exports.BuildRendererSettings,
     module.exports.BuildRendererVideoLibrary,
-    module.exports.BuildRendererScreenChooser,
-    buildRendererPendingToStart
+    buildRendererPendingToStart,
+    copyFfmpeg
 );
 
 module.exports.default = module.exports.build;

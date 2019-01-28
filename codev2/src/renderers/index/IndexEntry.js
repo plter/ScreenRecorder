@@ -92,7 +92,7 @@ class Entry extends FlexBoxApplication {
                 });
 
                 this._currentRecorder.ondataavailable = e => {
-                    streamQueue.appendData(e.data);
+                    streamQueue.appendData(e.data, e.timeStamp);
                 };
                 this._currentRecorder.start(1000);
             });
