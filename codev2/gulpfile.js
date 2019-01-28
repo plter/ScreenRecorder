@@ -41,9 +41,13 @@ function npmInstall(cb) {
 function createBuildTarget(targetName, entryHtmlFile, entryJsFile, objDir, outputDir) {
     let entryJsFileNameWithoutExtension = path.basename(entryJsFile, ".js");
 
-    function copyHtml() {
-        return gulp.src(entryHtmlFile)
-            .pipe(gulp.dest(outputDir));
+    function copyHtml(cb) {
+        if (entryHtmlFile) {
+            return gulp.src(entryHtmlFile)
+                .pipe(gulp.dest(outputDir));
+        } else {
+            cb();
+        }
     }
 
     function packJs() {
@@ -52,7 +56,8 @@ function createBuildTarget(targetName, entryHtmlFile, entryJsFile, objDir, outpu
                 output: {
                     filename: `${entryJsFileNameWithoutExtension}.webpack.js`,
                 },
-                mode: MODE
+                mode: MODE,
+                target: "node"
             }))
             .pipe(gulp.dest(objDir));
     }
@@ -104,6 +109,14 @@ createBuildTarget(
     path.join(PROJECT_DIR, "src", "renderers", "ScreenChooser", "ScreenChooser.js"),
     path.join(OUTPUT_OBJ_DIR, "src", "renderers", "ScreenChooser"),
     path.join(OUTPUT_APP_DIR, "src", "renderers", "ScreenChooser")
+);
+
+createBuildTarget(
+    "BuildRendererSrvReaderWorker",
+    null,
+    path.join(PROJECT_DIR, "src", "renderers", "commons", "workers", "SrvReader", "SrvReaderWorker.js"),
+    path.join(OUTPUT_OBJ_DIR, "src", "renderers", "commons", "workers", "SrvReader"),
+    path.join(OUTPUT_APP_DIR, "src", "renderers", "commons", "workers", "SrvReader")
 );
 
 function buildRendererAbout() {
@@ -191,7 +204,8 @@ module.exports.build = gulp.series(
     module.exports.BuildRendererSettings,
     module.exports.BuildRendererVideoLibrary,
     buildRendererPendingToStart,
-    copyFfmpeg
+    copyFfmpeg,
+    module.exports.BuildRendererSrvReaderWorker
 );
 
 module.exports.default = module.exports.build;

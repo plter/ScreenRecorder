@@ -41,7 +41,8 @@ module.exports = {
             height: 600,
             title: "视频库",
             webPreferences: {
-                nodeIntegration: true
+                nodeIntegration: true,
+                nodeIntegrationInWorker: true
             }
         });
         win.loadFile(window.path.join(window.appPath, "src", "renderers", "videolibrary", "VideoLibrary.html"));

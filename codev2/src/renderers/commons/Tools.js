@@ -7,5 +7,8 @@ module.exports = {
         if (!window.fs.existsSync(dirPath)) {
             window.fs.mkdirSync(dirPath);
         }
+    },
+    formatTimeString(time) {
+        return (time >= 10 ? "" : "0") + time
     }
 };
