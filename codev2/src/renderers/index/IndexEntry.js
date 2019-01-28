@@ -3,7 +3,7 @@ const FlexBoxApplication = require("../commons/FlexBoxApplication");
 const LocalStorageManager = require("../commons/LocalStorageManager");
 const AudioDeviceSelectorConfig = require("./AudioDeviceSelectorConfig");
 const RecordStatus = require("./RecordStatus");
-const CheckBoxIncludeComputerAudioConfig = require("./CheckBoxIncludeComputerAudioConfig");
+const StreamQueue = require("./StreamQueue");
 
 class Entry extends FlexBoxApplication {
 
@@ -58,7 +58,7 @@ class Entry extends FlexBoxApplication {
             this.recordState = RecordStatus.RETRIEVING_SCREEN_STREAM;
             let width = screen.width * 2;
             let height = screen.height * 2;
-            this._currentStream = await navigator.mediaDevices.getUserMedia({
+            let _videoStream = await navigator.mediaDevices.getUserMedia({
                 audio: false,
                 video: {
                     mandatory: {
@@ -77,29 +77,41 @@ class Entry extends FlexBoxApplication {
                     audio: this._selectorAudioInput.getSelectedAudioDevice()
                 });
                 for (let at of audioStream.getAudioTracks()) {
-                    this._currentStream.addTrack(at);
+                    _videoStream.addTrack(at);
                 }
             }
             this.recordState = RecordStatus.PENDING_TO_START_RECORD;
             window.electron.remote.getCurrentWindow().minimize();
-            Dialogs.showPendingToStartWindow().once("closed", this.startRecord.bind(this));
+            Dialogs.showPendingToStartWindow().once("closed", e => {
+                this.recordState = RecordStatus.RECORDING;
+                let streamQueue = new StreamQueue(window.path.join(LocalStorageManager.getDestDir(), `${Date.now()}.srv`));
+                this._currentRecorder = new MediaRecorder(_videoStream, {
+                    mimeType: "video/webm;codecs=h264",
+                    audioBitsPerSecond: parseInt(LocalStorageManager.getAudioBps()),
+                    videoBitsPerSecond: parseInt(LocalStorageManager.getVideoBps())
+                });
+
+                this._currentRecorder.ondataavailable = e => {
+                    streamQueue.appendData(e.data);
+                };
+                this._currentRecorder.start(1000);
+            });
         } else if (this.recordState == RecordStatus.RECORDING) {
-            //TODO
+            this._currentRecorder.stop();
+            this.recordState = RecordStatus.STOPPED;
+            window.electron.remote.getCurrentWindow().restore();
         }
     }
 
-    startRecord() {
-        this.recordState = RecordStatus.RECORDING;
-        //TODO
-    }
 
     pauseOrResumeHandler() {
         if (this.recordState == RecordStatus.RECORDING) {
             this.recordState = RecordStatus.PAUSED;
+            this._currentRecorder.pause();
         } else if (this.recordState == RecordStatus.PAUSED) {
             this.recordState = RecordStatus.RECORDING;
+            this._currentRecorder.resume();
         }
-        console.log("TODO pauseOrResume");
     }
 
     buildMainMenu() {

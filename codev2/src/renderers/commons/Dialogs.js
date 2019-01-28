@@ -67,10 +67,15 @@ module.exports = {
             width: 320,
             height: 240,
             modal: true,
+            maximizable: false,
+            minimizable: false,
+            fullscreenable: false,
+            resizable: false,
             title: "准备开始录制",
             webPreferences: {
                 nodeIntegration: true
-            }
+            },
+            alwaysOnTop: true
         });
         win.loadFile(window.path.join(window.appPath, "src", "renderers", "PendingToStart", "PendingToStart.html"));
         return win;

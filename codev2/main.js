@@ -30,8 +30,8 @@ let Main = {
         // Create the browser window.
 
         let options = {
-            width: 300,
-            height: 150,
+            width: 280,
+            height: 130,
             resizable: false,
             fullscreenable: false,
             title: "ScreenRecorder",

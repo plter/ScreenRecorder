@@ -33,8 +33,8 @@ class StreamQueue {
     }
 
     fileLoadedHandler() {
-
-        window.fs.appendFileSync(this.distFile, Buffer.from(this._fileReader.result));
+        let buffer = Buffer.from(this._fileReader.result);
+        window.fs.appendFileSync(this.distFile, buffer);
 
         if (this._blobs.length > 0) {
             this.shiftAndWrite();
