@@ -4,11 +4,28 @@
   "description": "Free screen recorder runs on all platforms",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "packInstaller": "electron-builder"
+  },
+  "build": {
+    "asar": false,
+    "appId": "top.yunp.screenrecorder",
+    "productName": "ScreenRecorder",
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "win": {
+      "icon": "src/res/icons/ScreenRecorder.ico"
+    },
+    "mac": {
+      "icon": "src/res/icons/ScreenRecorder.icns"
+    }
   },
   "author": "TOPYUNP",
   "devDependencies": {
     "electron": "^4.0.2",
+    "electron-builder": "^20.38.5",
     "gulp": "^4.0.0",
     "js2wc": "^1.0.10",
     "shelljs": "^0.8.3",

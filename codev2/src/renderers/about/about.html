@@ -46,7 +46,7 @@
             windowRezieHandler();
             window.onresize = windowRezieHandler;
 
-            $("#version").html(window.electron.remote.app.getVersion());
+            $("#version").html("版本：" + window.electron.remote.app.getVersion());
         }
 
         main();

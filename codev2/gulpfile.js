@@ -10,7 +10,8 @@ const PROJECT_DIR = __dirname;
 const OUTPUT_DIR = path.join(PROJECT_DIR, "dist");
 const OUTPUT_OBJ_DIR = path.join(OUTPUT_DIR, "obj");
 const OUTPUT_APP_DIR = path.join(OUTPUT_DIR, "app");
-const MODE = "development";// development or production
+let MODE = "development";// development or production
+let COMPILE_LEVEL = "";
 
 function copyPackageJson() {
     return gulp.src("package.json").pipe(gulp.dest(OUTPUT_APP_DIR));
@@ -66,7 +67,7 @@ function createBuildTarget(targetName, entryHtmlFile, entryJsFile, objDir, outpu
         js2wc.jsfile2wcfile(path.join(objDir, `${entryJsFileNameWithoutExtension}.webpack.js`), path.join(objDir, `${entryJsFileNameWithoutExtension}.cpp`));
         shelljs.exec(`
         docker run --rm -t -v ${objDir}:/Source -w /Source xtiqin/emsdk emcc \
-        -std=c++11 --bind -Wall ${MODE === "production" ? "-O2" : ""} \
+        -std=c++11 --bind -Wall ${COMPILE_LEVEL} \
         -s ENVIRONMENT=node \
         ${entryJsFileNameWithoutExtension}.cpp -o ${entryJsFileNameWithoutExtension}.js`);
         return gulp.src([
@@ -193,6 +194,22 @@ function copyFfmpeg(cb) {
     cb();
 }
 
+function buildInstaller(cb) {
+    shelljs.cd(OUTPUT_APP_DIR);
+    shelljs.exec(`npm run packInstaller`);
+    cb();
+}
+
+function setModeToProduction(cb) {
+    MODE = "production";
+    cb();
+}
+
+function setCompileLevelToO2(cb) {
+    COMPILE_LEVEL = "-O2";
+    cb();
+}
+
 
 module.exports.build = gulp.series(
     copyPackageJson,
@@ -210,5 +227,11 @@ module.exports.build = gulp.series(
 
 module.exports.default = module.exports.build;
 module.exports.BuildAndRun = gulp.series(module.exports.build, run);
+
 module.exports.BuildAndInstallAndRun = gulp.series(module.exports.build, npmInstall, run);
+
+/**
+ * 将工程打包成安装包
+ */
+module.exports.production = gulp.series(setCompileLevelToO2, module.exports.default, npmInstall, buildInstaller);
 
