@@ -7,7 +7,9 @@ const SrvListItemComponent = {
             props: ["filename"],
             data: function () {
                 return {
-                    editorVisible: false
+                    editorVisible: false,
+                    state: "",
+                    working: false
                 }
             },
             methods: {
@@ -35,11 +37,22 @@ const SrvListItemComponent = {
                     });
                     if (this.exportedFilePath) {
                         this.working = true;
+                        this.state = "正在启动任务";
                         let worker = new Worker("../commons/workers/SrvReader/SrvReaderWorker.js");
                         worker.onmessage = e => {
                             switch (e.data.cmd) {
                                 case WorkerDataCommand.CMD_READY:
-                                    worker.postMessage(WorkerDataCommand.makeRequestEncodeSrvToWebmCommand(window.path.join(LocalStorageManager.getDestDir(), this.filename), this.exportedFilePath));
+                                    worker.postMessage(WorkerDataCommand.makeRequestConvertSrvToWebmCommand(window.path.join(LocalStorageManager.getDestDir(), this.filename), `${this.exportedFilePath}.webm`));
+                                    break;
+                                case WorkerDataCommand.CMD_FOUND_BLOB:
+                                    this.state = `已找到个${e.data.totalFound}数据片段`;
+                                    break;
+                                case WorkerDataCommand.CMD_CONVERT_SRV_TO_WEBM_PROGRESS:
+                                    this.state = `正在生成webm ${e.data.currentCount}/${e.data.totalCount}`;
+                                    break;
+                                case WorkerDataCommand.CMD_CONVERT_SRV_TO_WEBM_COMPLETE:
+                                    this.state = `已生成webm`;
+                                    console.log(e.data);
                                     break;
                             }
                         };
@@ -49,7 +62,10 @@ const SrvListItemComponent = {
             template: `
 <div class="srv-file-list-item">
     <div class="file-name-label" style="left: 0;top: 0;right: 0;bottom: 0;position: absolute;display: flex;flex-direction: row;align-items: center;">
-        <div style="width: 5px"></div><div>{{filename}}</div>
+        <div style="width: 5px"></div>
+        <div>{{filename}}</div>
+        <div style="width: 5px"></div>
+        <div class="alert alert-info" style="margin: 0;font-size: 10pt;padding: 2px;border: 0;" v-if="state">{{state}}</div>
     </div>
     <div class="file-name-editor" v-show="editorVisible" style="background-color: rgba(255,255,255,0.6);z-index:1001;position: absolute;left: 0;top: 0;right: 0;bottom: 0;display: flex;flex-direction: row;align-items: center">
         <div style="width: 5px"></div>
@@ -61,7 +77,7 @@ const SrvListItemComponent = {
     <div class="file-operate-btns-container">
         <div style="flex: 1"></div>
             <div class="btn-group" role="group">
-                <a href="#" class="btn btn-sm btn-outline-dark" v-on:click="btnExportClicked"><i class="fa fa-file-export"></i></a>
+                <a href="#" class="btn btn-sm btn-outline-dark" v-on:click="btnExportClicked" :disabled="working"><i class="fa fa-file-export"></i></a>
                 <a href="#" class="btn btn-sm btn-outline-dark" v-on:click="btnShowEditorClicked"><i class="fa fa-edit"></i></a>
                 <a href="#" class="btn btn-sm btn-outline-dark" v-on:click="btnShowInFilesClicked"><i class="fa fa-eye"></i></a>
             </div>
