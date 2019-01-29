@@ -37,19 +37,21 @@ function encodeSrvToWebm(ev) {
         postMessage(WorkerDataCommand.makeFoundBlobCommand(blobs.length));
     }
 
+    //read data to webm file
+    let outWebmFileFd = fs.openSync(ev.data.outWebmPath, 'w');
     let blobsCount = blobs.length;
     position = 0;
-    //read data to webm file
     for (let i = 0; i < blobsCount; i++) {
         position += 8;
         let blobInfo = blobs[i];
         let buffer = Buffer.alloc(blobInfo.dataLength);
         fs.readSync(inSrvFileFd, buffer, 0, blobInfo.dataLength, position);
-        fs.appendFileSync(ev.data.outWebmPath, buffer);
+        fs.writeSync(outWebmFileFd, buffer);
         position += blobInfo.dataLength;
         postMessage(WorkerDataCommand.makeConvertSrvToWebmProgress(i + 1, blobs.length));
     }
     fs.closeSync(inSrvFileFd);
+    fs.closeSync(outWebmFileFd);
     postMessage(WorkerDataCommand.makeConvertSrvToWebComplete(blobs, ev.data.outWebmPath));
 }
 

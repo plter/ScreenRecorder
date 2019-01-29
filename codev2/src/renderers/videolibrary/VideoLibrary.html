@@ -85,9 +85,11 @@
 <script>
     window.$ = window.jQuery = require("jquery");
     window.fs = require("fs");
+    window.os = require("os");
     window.electron = require("electron");
     window.appPath = window.electron.remote.app.getAppPath();
     window.path = require("path");
+    window.childProcess = require("child_process");
     window.Vue = require("vue/dist/vue.min");
     require("popper.js");
     require("bootstrap");
