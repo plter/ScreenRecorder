@@ -1,7 +1,6 @@
 const gulp = require("gulp");
 const path = require("path");
 const webpackStream = require('webpack-stream');
-const webpack = require('webpack');
 const js2wc = require('js2wc');
 const shelljs = require("shelljs");
 const os = require("os");
