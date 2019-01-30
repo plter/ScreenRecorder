@@ -17,26 +17,32 @@ function copyPackageJson() {
     return gulp.src("package.json").pipe(gulp.dest(OUTPUT_APP_DIR));
 }
 
-function compileMain() {
+function compileMain(cb) {
     js2wc.jsfile2wcfile(path.join(PROJECT_DIR, "main.js"), path.join(OUTPUT_OBJ_DIR, "main.cpp"));
-    shelljs.exec(
+    let exitCode = shelljs.exec(
         `docker run --rm -t -v ${OUTPUT_OBJ_DIR}:/Source -w /Source xtiqin/emsdk emcc \
-        -std=c++11 --bind -Wall ${MODE === "production" ? "-O2" : ""} \
+        -std=c++11 --bind -Wall ${COMPILE_LEVEL} \
         -s ENVIRONMENT=node \
-        main.cpp -o main.js`);
-    return gulp.src([
-        path.join(OUTPUT_OBJ_DIR, "main.js"),
-        path.join(OUTPUT_OBJ_DIR, "main.wasm"),
-    ]).pipe(gulp.dest(path.join(OUTPUT_APP_DIR)));
+        main.cpp -o main.js`).code;
+    if (exitCode) {
+        cb(new Error(`Compile main.cpp failed with exit code ${exitCode}`));
+        return null;
+    } else {
+        return gulp.src([
+            path.join(OUTPUT_OBJ_DIR, "main.js"),
+            path.join(OUTPUT_OBJ_DIR, "main.wasm"),
+        ]).pipe(gulp.dest(path.join(OUTPUT_APP_DIR)));
+    }
 }
 
 function npmInstall(cb) {
     shelljs.cd(OUTPUT_APP_DIR);
     let exitCode;
     if (!(exitCode = shelljs.exec("npm install"))) {
-        console.error(`Failed to run 'npm install', exit code is ${exitCode}`);
+        cb(new Error(`Failed to run 'npm install', exit code is ${exitCode}`));
+    } else {
+        cb();
     }
-    cb();
 }
 
 function createBuildTarget(targetName, entryHtmlFile, entryJsFile, objDir, outputDir) {
@@ -63,17 +69,22 @@ function createBuildTarget(targetName, entryHtmlFile, entryJsFile, objDir, outpu
             .pipe(gulp.dest(objDir));
     }
 
-    function compilePackedJs() {
+    function compilePackedJs(cb) {
         js2wc.jsfile2wcfile(path.join(objDir, `${entryJsFileNameWithoutExtension}.webpack.js`), path.join(objDir, `${entryJsFileNameWithoutExtension}.cpp`));
-        shelljs.exec(`
+        let exitCode = shelljs.exec(`
         docker run --rm -t -v ${objDir}:/Source -w /Source xtiqin/emsdk emcc \
         -std=c++11 --bind -Wall ${COMPILE_LEVEL} \
         -s ENVIRONMENT=node \
-        ${entryJsFileNameWithoutExtension}.cpp -o ${entryJsFileNameWithoutExtension}.js`);
-        return gulp.src([
-            path.join(objDir, `${entryJsFileNameWithoutExtension}.js`),
-            path.join(objDir, `${entryJsFileNameWithoutExtension}.wasm`)
-        ]).pipe(gulp.dest(outputDir));
+        ${entryJsFileNameWithoutExtension}.cpp -o ${entryJsFileNameWithoutExtension}.js`).code;
+        if (exitCode) {
+            cb(new Error(`Compile ${entryJsFileNameWithoutExtension}.cpp failed with exit code ${exitCode}`));
+            return null;
+        } else {
+            return gulp.src([
+                path.join(objDir, `${entryJsFileNameWithoutExtension}.js`),
+                path.join(objDir, `${entryJsFileNameWithoutExtension}.wasm`)
+            ]).pipe(gulp.dest(outputDir));
+        }
     }
 
     module.exports[targetName] = gulp.series(copyHtml, packJs, compilePackedJs);
@@ -233,5 +244,5 @@ module.exports.BuildAndInstallAndRun = gulp.series(module.exports.build, npmInst
 /**
  * 将工程打包成安装包
  */
-module.exports.production = gulp.series(setCompileLevelToO2, module.exports.default, npmInstall, buildInstaller);
+module.exports.production = gulp.series(setCompileLevelToO2, setModeToProduction, module.exports.default, npmInstall, buildInstaller);
 

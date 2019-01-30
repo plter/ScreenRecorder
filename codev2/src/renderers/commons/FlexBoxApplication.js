@@ -12,7 +12,6 @@ class FlexBoxApplication {
 
     _flexBoxApplicationWindowChangeHandler(e) {
         this.rootElement.style.height = `${window.innerHeight}px`;
-        console.log(e);
     }
 
     get rootElement() {
