@@ -72,7 +72,7 @@ let Main = {
                 }
             }
         ]);
-        this.tray.setToolTip('This is my application.');
+        this.tray.setToolTip('ScreenRecorder');
         this.tray.setContextMenu(contextMenu);
     },
 
