@@ -1,6 +1,6 @@
 {
   "name": "screen-recorder",
-  "version": "2019.1.26",
+  "version": "2019.2.20",
   "description": "Free screen recorder runs on all platforms",
   "main": "main.js",
   "scripts": {
