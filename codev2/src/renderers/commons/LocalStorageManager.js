@@ -7,7 +7,7 @@ const LS_KEY_BASE_NS = "topyunp_screenrecorder";
 const Tools = require("../commons/Tools");
 
 const LocalStorageManager = {
-    getDestDir: function () {
+    getVideoLibraryDir: function () {
         let dest = localStorage.getItem(`${LS_KEY_BASE_NS}_destDir`) || window.path.join(window.electron.remote.app.getPath("home"), "SRLibrary");
         Tools.mkdirs(dest);
         return dest;

@@ -77,7 +77,13 @@
             <div class="operations">操作</div>
         </div>
         <div class="card-body srv-file-list">
-            <srv-file-list-item v-for="f in srvFiles" v-bind:filename="f"></srv-file-list-item>
+            <srv-file-list-item
+                    v-for="f in srvFiles"
+                    :key="f.id"
+                    v-bind:file="f"
+                    v-bind:filename="f.filename"
+                    v-on:delete-file="onDeleteFile">
+            </srv-file-list-item>
         </div>
     </div>
 </div>
@@ -90,7 +96,7 @@
     window.appPath = window.electron.remote.app.getAppPath();
     window.path = require("path");
     window.childProcess = require("child_process");
-    window.Vue = require("vue/dist/vue.min");
+    window.Vue = require("vue/dist/vue");
     require("popper.js");
     require("bootstrap");
     require("./VideoLibrary");

@@ -14,7 +14,7 @@ const Entry = {
         this._videoBpsInput = document.querySelector("#videoBpsInput");
         this._videoBpsInput.value = LocalStorageManager.getVideoBps();
         this._dirPathInput = document.querySelector("#destDirPath");
-        this._dirPathInput.value = LocalStorageManager.getDestDir();
+        this._dirPathInput.value = LocalStorageManager.getVideoLibraryDir();
 
         this.resizeRootByWindowSize();
     },

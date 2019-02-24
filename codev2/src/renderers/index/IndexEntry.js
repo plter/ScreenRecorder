@@ -86,7 +86,7 @@ class Entry extends FlexBoxApplication {
             Dialogs.showPendingToStartWindow().once("closed", e => {
                 this.recordState = RecordStatus.RECORDING;
                 let date = new Date();
-                let streamQueue = new StreamQueue(window.path.join(LocalStorageManager.getDestDir(), `${date.getFullYear()}${Tools.formatTimeString(date.getMonth() + 1)}${Tools.formatTimeString(date.getDate())}${Tools.formatTimeString(date.getHours())}${Tools.formatTimeString(date.getMinutes())}${Tools.formatTimeString(date.getSeconds())}.srv`));
+                let streamQueue = new StreamQueue(window.path.join(LocalStorageManager.getVideoLibraryDir(), `${date.getFullYear()}${Tools.formatTimeString(date.getMonth() + 1)}${Tools.formatTimeString(date.getDate())}${Tools.formatTimeString(date.getHours())}${Tools.formatTimeString(date.getMinutes())}${Tools.formatTimeString(date.getSeconds())}.srv`));
                 this._currentRecorder = new MediaRecorder(_videoStream, {
                     mimeType: "video/webm;codecs=h264",
                     audioBitsPerSecond: parseInt(LocalStorageManager.getAudioBps()),
