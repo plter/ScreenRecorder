@@ -1,3 +1,5 @@
+const LocalStorageManager = require("../commons/LocalStorageManager");
+
 const SrvListItemComponent = {
     create() {
         return {
@@ -7,11 +9,23 @@ const SrvListItemComponent = {
             },
             methods: {
                 btnShowEditorClicked() {
-                    this.file.btnShowEditorClicked();
+                    if (this.working) {
+                        alert("正在工作中，不能重命名！");
+                        return;
+                    }
+
+                    this.file.editorVisible = true;
+                    this.filenameBeforeEdit = this.filename;
                 },
+
                 btnHideEditorClicked() {
-                    this.file.btnHideEditorClicked();
+                    this.file.editorVisible = false;
+                    if (this.filenameBeforeEdit !== this.filename) {
+                        window.fs.renameSync(window.path.join(LocalStorageManager.getVideoLibraryDir(), this.filenameBeforeEdit), window.path.join(LocalStorageManager.getVideoLibraryDir(), this.filename));
+                        this.file.filename = this.filename;
+                    }
                 },
+
                 btnShowInFilesClicked() {
                     this.file.btnShowInFilesClicked();
                 },

@@ -52,24 +52,6 @@ class SrvListItemData {
         this.boundData.exportProgress = value;
     }
 
-
-    btnShowEditorClicked() {
-        if (this.working) {
-            alert("正在工作中，不能重命名！");
-            return;
-        }
-
-        this.editorVisible = true;
-        this.filenameBeforeEdit = this.filename;
-    }
-
-    btnHideEditorClicked() {
-        this.editorVisible = false;
-        if (this.filenameBeforeEdit !== this.filename) {
-            window.fs.renameSync(window.path.join(LocalStorageManager.getVideoLibraryDir(), this.filenameBeforeEdit), window.path.join(LocalStorageManager.getVideoLibraryDir(), this.filename));
-        }
-    }
-
     btnShowInFilesClicked() {
         if (this.exportedFilePath) {
             window.electron.shell.showItemInFolder(this.exportedFilePath);
