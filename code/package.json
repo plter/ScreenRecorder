@@ -16,7 +16,7 @@
   ],
   "author": "GitHub",
   "devDependencies": {
-    "electron": "^3.0.13",
+    "electron": "^9.1.1",
     "gulp": "^3.9.1",
     "gulp-shell": "^0.6.5"
   },
