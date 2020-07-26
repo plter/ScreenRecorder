@@ -24,7 +24,7 @@
   },
   "author": "TOPYUNP",
   "devDependencies": {
-    "electron": "^4.0.2",
+    "electron": "^9.1.1",
     "electron-builder": "^20.38.5",
     "gulp": "^4.0.0",
     "js2wc": "^1.0.11",
